@@ -2,6 +2,7 @@
 using SalesMVC.Models;
 using SalesMVC.Models.ViewModels;
 using SalesMVC.Services;
+using SalesMVC.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,46 @@ namespace SalesMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult Details(long? id)
+        {
+            if (id == null) return NotFound();
+            
+            Seller seller = _sellerService.FindSellerAndDepartmentByIdSeller(id.Value);
+            if (seller == null) return NotFound();
+            return View(seller);            
+        }
+
+        public IActionResult Edit(long? id)
+        {
+            if (id == null) return NotFound();
+            Seller seller = _sellerService.FindSellerAndDepartmentByIdSeller(id.Value);
+            if (seller == null) return NotFound();
+            List<Department> departments = _departmentService.findAll();
+            SellerFormViewModel sellerFormViewModel = new SellerFormViewModel { Departments = departments, Seller = seller};
+            return View(sellerFormViewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if(id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException ex) {
+                return NotFound();
+            }
+            catch(DBConcurrencyException ex)
+            {
+                return BadRequest();
+            }
+           
+        }
         public IActionResult Delete(long? id)
         {
             if (id == null)
@@ -62,5 +103,7 @@ namespace SalesMVC.Controllers
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
         }
+
+        
     }  
 }
