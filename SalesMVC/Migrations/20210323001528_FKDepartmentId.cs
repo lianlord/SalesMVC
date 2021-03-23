@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SalesMVC.Migrations
 {
-    public partial class OtherEntities : Migration
+    public partial class FKDepartmentId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,7 +18,7 @@ namespace SalesMVC.Migrations
                     Email = table.Column<string>(nullable: true),
                     BirthDate = table.Column<DateTime>(nullable: false),
                     Salary = table.Column<double>(nullable: false),
-                    DepartmentId = table.Column<long>(nullable: true)
+                    DepartmentId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,11 +28,11 @@ namespace SalesMVC.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Department",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SallesRecord",
+                name: "SalesRecord",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -44,9 +44,9 @@ namespace SalesMVC.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SallesRecord", x => x.Id);
+                    table.PrimaryKey("PK_SalesRecord", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SallesRecord_Seller_SellerId",
+                        name: "FK_SalesRecord_Seller_SellerId",
                         column: x => x.SellerId,
                         principalTable: "Seller",
                         principalColumn: "Id",
@@ -54,8 +54,8 @@ namespace SalesMVC.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SallesRecord_SellerId",
-                table: "SallesRecord",
+                name: "IX_SalesRecord_SellerId",
+                table: "SalesRecord",
                 column: "SellerId");
 
             migrationBuilder.CreateIndex(
@@ -67,7 +67,7 @@ namespace SalesMVC.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SallesRecord");
+                name: "SalesRecord");
 
             migrationBuilder.DropTable(
                 name: "Seller");

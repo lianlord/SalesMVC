@@ -12,6 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210322210024_OtherEntities.cs" />
+    <Compile Remove="Migrations\20210322210024_OtherEntities.Designer.cs" />
+    <Compile Remove="Migrations\20210322234835_Department_foreign_key.cs" />
+    <Compile Remove="Migrations\20210322234835_Department_foreign_key.Designer.cs" />
+    <Compile Remove="Migrations\20210323000058_Department_foreign_key.cs" />
+    <Compile Remove="Migrations\20210323000058_Department_foreign_key.Designer.cs" />
+    <Compile Remove="Migrations\20210323001223_FKDepartmentsAdded.cs" />
+    <Compile Remove="Migrations\20210323001223_FKDepartmentsAdded.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\Departments\Create.cshtml" />
     <None Include="Views\Departments\Delete.cshtml" />
     <None Include="Views\Departments\Details.cshtml" />

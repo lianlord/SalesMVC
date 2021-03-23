@@ -22,8 +22,20 @@ namespace SalesMVC.Services
         }
 
         public void Insert(Seller seller)
-        {
+        {             
             _context.Add(seller);
+            _context.SaveChanges();
+        }
+
+        public Seller FindSellerById(long id)
+        {
+            return _context.Seller.FirstOrDefault(s => s.Id == id);
+        }
+
+        public void Remove(long id)
+        {
+            var seller = FindSellerById(id);
+            _context.Seller.Remove(seller);
             _context.SaveChanges();
         }
     }

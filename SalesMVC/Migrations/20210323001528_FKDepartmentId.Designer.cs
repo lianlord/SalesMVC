@@ -9,8 +9,8 @@ using SalesMVC.Data;
 namespace SalesMVC.Migrations
 {
     [DbContext(typeof(SalesContext))]
-    [Migration("20210322210024_OtherEntities")]
-    partial class OtherEntities
+    [Migration("20210323001528_FKDepartmentId")]
+    partial class FKDepartmentId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,7 +48,7 @@ namespace SalesMVC.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("SallesRecord");
+                    b.ToTable("SalesRecord");
                 });
 
             modelBuilder.Entity("SalesMVC.Models.Seller", b =>
@@ -58,7 +58,7 @@ namespace SalesMVC.Migrations
 
                     b.Property<DateTime>("BirthDate");
 
-                    b.Property<long?>("DepartmentId");
+                    b.Property<long>("DepartmentId");
 
                     b.Property<string>("Email");
 
@@ -84,7 +84,8 @@ namespace SalesMVC.Migrations
                 {
                     b.HasOne("SalesMVC.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
