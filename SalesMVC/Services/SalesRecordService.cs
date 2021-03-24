@@ -17,31 +17,45 @@ namespace SalesMVC.Services
             _context = context;
         }
 
-        public async Task<List<SalesRecord>> FindSalesByDateAsync(DateTime? initial, DateTime? final)
+        public async Task<List<SalesRecord>> FindByDateAsync(DateTime? minDate, DateTime? maxDate)
         {
-            /*
-            var result = from s in _context.SalesRecord select s;
-            if (initial.HasValue)
+            var result = from obj in _context.SalesRecord select obj;
+            if (minDate.HasValue)
             {
-                result = result.Where(s => s.Date >= initial);
+                result = result.Where(x => x.Date >= minDate.Value);
             }
-            if (final.HasValue)
+
+            if (maxDate.HasValue)
             {
-                result = result.Where(s => s.Date <= final);
+                result = result.Where(x => x.Date <= maxDate.Value);
             }
+
             return await result
-                .Include(s => s.Seller)
-                .Include(s => s.Seller.Department)
-                .OrderBy(s => s.Date)
+                .Include(x => x.Seller)
+                .Include(x => x.Seller.Department)
+                .OrderByDescending(x => x.Date)
                 .ToListAsync();
-            */
-            return await _context.SalesRecord
-                .Where(s => s.Date >= initial && s.Date <= final)
-                .OrderBy(s => s.Date)
-                .Include(s => s.Seller)
-                .Include(s => s.Seller.Department)
+        }
+
+        public async Task<List<IGrouping<Department, SalesRecord>>> FindByDateGroupingAsync(DateTime? minDate, DateTime? maxDate)
+        {
+            var result = from obj in _context.SalesRecord select obj;
+            if (minDate.HasValue)
+            {
+                result = result.Where(x => x.Date >= minDate.Value);
+            }
+
+            if (maxDate.HasValue)
+            {
+                result = result.Where(x => x.Date <= maxDate.Value);
+            }
+
+            return await result
+                .Include(x => x.Seller)
+                .Include(x => x.Seller.Department)
+                .OrderByDescending(x => x.Date)
+                .GroupBy(x => x.Seller.Department)
                 .ToListAsync();
-            
         }
     }
 }
