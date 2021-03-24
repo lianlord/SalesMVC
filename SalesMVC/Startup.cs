@@ -44,7 +44,8 @@ namespace SalesMVC
                     builder => builder.MigrationsAssembly("SalesMVC")));
             services.AddScoped<SeedingService>();
             services.AddScoped<SellerService>();
-            services.AddScoped<DepartmentService>();            
+            services.AddScoped<DepartmentService>();
+            services.AddScoped<SalesRecordService>();
         }
         //Localization options customized
         private void Localization(IApplicationBuilder app)

@@ -40,9 +40,16 @@ namespace SalesMVC.Services
 
         public async Task RemoveAsync(long id)
         {
-            var seller = await FindSellerByIdAsync(id);
-            _context.Seller.Remove(seller);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var seller = await FindSellerByIdAsync(id);
+                _context.Seller.Remove(seller);
+                await _context.SaveChangesAsync();
+            }catch(DbUpdateException ex)
+            {
+                throw new IntegrityException(ex.Message);
+            }
+           
         }
 
         public async Task UpdateAsync(Seller seller)
@@ -53,7 +60,7 @@ namespace SalesMVC.Services
                 try
                 {
                     _context.Update(seller);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 catch(DbUpdateConcurrencyException ex)
                 {
