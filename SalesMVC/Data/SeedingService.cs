@@ -9,7 +9,7 @@ namespace SalesMVC.Data
 {
     public class SeedingService
     {
-        private SalesContext _context;
+        private readonly SalesContext _context;
 
         public SeedingService(SalesContext context)
         {
@@ -22,7 +22,7 @@ namespace SalesMVC.Data
             {
                 return; // DB has been seeded
             }
-
+                
             Department d1 = new Department(1, "Computers");
             Department d2 = new Department(2, "Electronics");
             Department d3 = new Department(3, "Fashion");

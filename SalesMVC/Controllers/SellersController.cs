@@ -24,13 +24,13 @@ namespace SalesMVC.Controllers
 
         public IActionResult Index()
         {
-            var list = _sellerService.FindAll();
+            var list = _sellerService.FindAllAsync();
             return View(list);
         }
 
         public IActionResult Create()
         {
-            var list = _departmentService.findAll();
+            var list = _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = list };
             return View(viewModel);
         }
@@ -39,6 +39,13 @@ namespace SalesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
+            //validar entrada
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAllAsync();
+                var viewModel = new SellerFormViewModel { Departments = departments, Seller = seller };
+                return View(viewModel);
+            }
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
@@ -48,7 +55,7 @@ namespace SalesMVC.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             
-            Seller seller = _sellerService.FindSellerAndDepartmentByIdSeller(id.Value);
+            Seller seller = _sellerService.FindSellerAndDepartmentByIdSellerAsync(id.Value);
             if (seller == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found"});
             return View(seller);            
@@ -59,10 +66,10 @@ namespace SalesMVC.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided"});
 
-            Seller seller = _sellerService.FindSellerAndDepartmentByIdSeller(id.Value);
+            Seller seller = _sellerService.FindSellerAndDepartmentByIdSellerAsync(id.Value);
             if (seller == null) 
                 return RedirectToAction(nameof(Error), new { message = "Id not found"});
-            List<Department> departments = _departmentService.findAll();
+            List<Department> departments = _departmentService.FindAllAsync();
             SellerFormViewModel sellerFormViewModel = new SellerFormViewModel { Departments = departments, Seller = seller};
             return View(sellerFormViewModel);
         }
@@ -70,11 +77,18 @@ namespace SalesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            if(id != seller.Id)
+            //validar entrada
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAllAsync();
+                var viewModel = new SellerFormViewModel { Departments = departments, Seller = seller };
+                return View(viewModel);
+            }
+            if (id != seller.Id)
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             try
             {
-                _sellerService.Update(seller);
+                _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException ex) {
@@ -87,7 +101,7 @@ namespace SalesMVC.Controllers
             if (id == null)            
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             
-            Seller seller = _sellerService.FindSellerById(id.Value);
+            Seller seller = _sellerService.FindSellerByIdAsync(id.Value);
             if (seller == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             return View(seller);
@@ -97,7 +111,7 @@ namespace SalesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(long id)
         {
-            _sellerService.Remove(id);
+            _sellerService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 

@@ -18,9 +18,9 @@ namespace SalesMVC.Services
             _context = context;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
         }
 
         public void Insert(Seller seller)
@@ -29,25 +29,26 @@ namespace SalesMVC.Services
             _context.SaveChanges();
         }
 
-        public Seller FindSellerById(long id)
+        public async Task<Seller> FindSellerByIdAsync(long id)
         {
-            return _context.Seller.FirstOrDefault(s => s.Id == id);
+            return await _context.Seller.FirstOrDefaultAsync(s => s.Id == id);
         }
-        public Seller FindSellerAndDepartmentByIdSeller(long id)
+        public async Task<Seller> FindSellerAndDepartmentByIdSellerAsync(long id)
         {
-            return _context.Seller.Include(s => s.Department).FirstOrDefault(s => s.Id == id);
+            return await _context.Seller.Include(s => s.Department).FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public void Remove(long id)
+        public async Task RemoveAsync(long id)
         {
-            var seller = FindSellerById(id);
+            var seller = await FindSellerByIdAsync(id);
             _context.Seller.Remove(seller);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Seller seller)
+        public async Task UpdateAsync(Seller seller)
         {
-            if(_context.Seller.Any(s => s.Id == seller.Id))
+            bool hasAny = await _context.Seller.AnyAsync(s => s.Id == seller.Id);
+            if(hasAny)
             {                
                 try
                 {
